@@ -170,6 +170,8 @@ Browser --> Browser : WebRTC P2P Media
 @enduml
 ```
 
+![Image](https://github.com/JabadeSusheelKrishna/Online-Meeting-WebApp/blob/main/ProPlan.png)
+
 ---
 
 ## 📦 API Endpoints Overview
