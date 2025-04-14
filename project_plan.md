@@ -17,7 +17,7 @@ We’ve adopted a **Microservices Architecture** with lightweight APIs and Redis
 - WebRTC-based peer-to-peer video/audio calls (5-6 participants per room)
 - Create and join meetings via unique Meeting IDs
 - Ephemeral meeting state management using **Redis**
-- Persistent meeting metadata storage in **Database (PostgreSQL/MongoDB)**
+- Persistent meeting metadata storage in **Database (MongoDB)**
 - Meeting duration tracking and auto-expiry
 - Host privileges (mute/remove participants)
 - Load-balanced and horizontally scalable **Signaling Service**
@@ -30,9 +30,9 @@ We’ve adopted a **Microservices Architecture** with lightweight APIs and Redis
 
 | Category         | Technology             |
 |:----------------|:----------------------|
-| Frontend         | JavaScript (WebRTC APIs, WebSockets) |
+| Frontend         | JavaScript (React, WebRTC APIs, WebSockets) |
 | Authentication   | OAuth 2.0 / OpenID Connect |
-| Backend          | Node.js / Golang (Microservices) |
+| Backend          | Node.js |
 | Signaling Server | WebSocket server (Node.js / Golang) |
 | Data Storage     | PostgreSQL / MongoDB |
 | Cache / Session Store | Redis Cluster |
