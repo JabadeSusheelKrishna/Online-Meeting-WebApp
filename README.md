@@ -26,6 +26,18 @@ We’ve adopted a **Microservices Architecture** with lightweight APIs and Redis
 
 ---
 
+## 🏁 How to Run Locally ? 
+- first you need install npm packages by running this command in terminal
+```bash
+npm i
+```
+- then run this command to start the application
+```bash
+npm start
+```
+- now open your browser and go to localhost:3000 to see the application.
+- also you need to create certificates to run the application locally. you can use this [link](https://letsencrypt.org/getting-started/) to get started.
+
 ## 🛠️ Tech Stack
 
 | Category         | Technology             |
