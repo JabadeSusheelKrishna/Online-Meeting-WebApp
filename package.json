@@ -8,13 +8,18 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "meeting": "node meet_server.cjs"
+    "meeting": "node meet_server.cjs",
+    "signalling": "node server.cjs"
   },
   "dependencies": {
+    "express": "^5.1.0",
     "firebase": "^11.6.0",
     "http": "^0.0.1-security",
+    "js-cookie": "^3.0.5",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.5.0",
+    "socket.io": "^4.8.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",

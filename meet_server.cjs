@@ -32,7 +32,8 @@ function scheduleMeeting(start_time, end_time) {
 
 function joinMeetingNow(meeting_id) {
     const meeting = meetings.find(meeting => meeting.id == meeting_id);
-    if (meeting && meeting.start_time < new Date().toISOString() && meeting.end_time > new Date().toISOString()) {
+    // if (meeting && meeting.start_time < new Date().toISOString() && meeting.end_time > new Date().toISOString()) {
+    if (meeting) {
         if (meeting.room_allocated == -1) {
             room_count += 1;
             meeting.room_allocated = room_count;

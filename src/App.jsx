@@ -4,6 +4,8 @@ import Authentication from './authentication';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import './App.css';
+import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 async function createMeeting() {
   const start_time = document.getElementsByName('startTime')[0].value;
@@ -47,6 +49,13 @@ async function joinMeeting() {
 
     const data = await response.json();
     alert("Joined Meeting with Room Number: " + data.room_id);
+
+    // Store room number in cookies
+    Cookies.set('roomId', data.room_id);
+
+    // Redirect to Meeting page
+    const navigate = useNavigate();
+    navigate('/meeting');
   } catch (error) {
     alert("Error: " + error.message);
   }
