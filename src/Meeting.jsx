@@ -1,5 +1,6 @@
 import './App.css';
 import Cookies from 'js-cookie';
+import io from 'socket.io-client';
 
 const socket = io('http://localhost:3000');
 let localStream = null;
@@ -12,6 +13,7 @@ function validateRoomId(roomId) {
 }
 function joinRoom() {
     console.log("Joining room...");
+    alert("Your Room Id is " + roomId);
     if (!validateRoomId(roomId)) {
       alert('Invalid room ID. Please try again.');
       return;
