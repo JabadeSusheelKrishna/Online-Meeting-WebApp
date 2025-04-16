@@ -5,10 +5,16 @@ let localStream = null;
 const peers = {};
 let roomId;
 
+function validateRoomId(roomId) {
+  // pattern to check three words with seperated by hyphens and converts all letters to small and no numbers in between
+  const checkPattern = /^[a-z]+-[a-z]+-[a-z]+$/;
+  return checkPattern.test(roomId);
+}
+
 function joinRoom() {
   roomId = document.getElementById('roomId').value;
-  if (roomId !== '1' && roomId !== '2') {
-    alert('Invalid room ID. Use 1 or 2.');
+  if (validateRoomId(roomId)) {
+    alert('Invalid room ID. It should contain only three words separated by hyphens. No numbers or special characters allowed.');
     return;
   }
 
@@ -32,8 +38,6 @@ function startLocalVideo() {
     alert('This page must be served via HTTPS or localhost to access camera/mic.');
   }
 }
-
-  
 
 socket.on('new-peer', (peerId) => {
   console.log(`New peer: ${peerId}`);
