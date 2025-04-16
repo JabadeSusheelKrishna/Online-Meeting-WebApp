@@ -1,5 +1,5 @@
-const socket = io('https://mindful-emotion-production.up.railway.app');
-// const socket = io('https://localhost:3000');
+// const socket = io('https://mindful-emotion-production.up.railway.app');
+const socket = io('http://localhost:3000');
 
 let localStream = null;
 const peers = {};
@@ -7,17 +7,17 @@ let roomId;
 
 function validateRoomId(roomId) {
   // pattern to check three words with seperated by hyphens and converts all letters to small and no numbers in between
-  const checkPattern = /^[a-z]+-[a-z]+-[a-z]+$/;
+  const checkPattern = /^(100|[1-9][0-9]?)$/;
   return checkPattern.test(roomId);
 }
 
 function joinRoom() {
   roomId = document.getElementById('roomId').value;
-  if (validateRoomId(roomId)) {
+  console.log(roomId);
+  if (!validateRoomId(roomId)) {
     alert('Invalid room ID. It should contain only three words separated by hyphens. No numbers or special characters allowed.');
     return;
   }
-
   socket.emit('join-room', roomId);
 }
 

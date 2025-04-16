@@ -12,8 +12,7 @@ const io = require('socket.io')(httpServer, { cors: { origin: '*' } });
 app.use(express.static('public'));
 
 function validateRoomId(roomId) {
-  // pattern to check three words with seperated by hyphens and converts all letters to small and no numbers in between
-  const checkPattern = /^[a-z]+-[a-z]+-[a-z]+$/;
+  const checkPattern = /^(100|[1-9][0-9]?)$/;
   return checkPattern.test(roomId);
 }
 
@@ -21,7 +20,7 @@ io.on('connection', (socket) => {
   console.log(`User connected: ${socket.id}`);
 
   socket.on('join-room', (roomId) => {
-    if (validateRoomId(roomId)) {
+    if (!validateRoomId(roomId)) {
       console.log(`Room ${roomId} is invalid.`);
       return;
     }
