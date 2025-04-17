@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "meeting": "node meet_server.cjs",
-    "signalling": "node server.cjs"
+    "signalling": "node server.cjs",
+    "room_manager" : "node rooms_manager.cjs"
   },
   "dependencies": {
     "express": "^5.1.0",

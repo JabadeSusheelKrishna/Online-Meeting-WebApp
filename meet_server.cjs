@@ -1,6 +1,5 @@
 const http = require('http');
 
-let room_count = 2;
 let meetings = [
     {
         id: 1,
@@ -15,11 +14,35 @@ let meetings = [
         end_time: '2025-04-17T01:00',
         participants_count: 0,
         room_allocated: -1,
-    },
+    }
 ];
 
+function get_meeting_id() {
+    // Generates a unique meeting ID
+    // for now, only incrementing the last meeting ID
+    return meetings.length + 1;
+}
+
+function get_a_room() {
+    // Allocates a room to a meeting
+    // send get request to rooms_manager url : "http://localhost:4000/Room" Method : `GET`
+    // return the room number
+    return new Promise((resolve, reject) => {
+        http.get('http://localhost:4000/Room', (res) => {
+            let data = '';
+            res.on('data', (chunk) => { data += chunk; });
+            res.on('end', () => {
+                try {
+                    const room = JSON.parse(data);
+                    resolve(room.room_number);
+                } catch (error) { reject(error); }
+            });
+        }).on("error", (err) => { reject(err); });
+    });
+}
+
 function scheduleMeeting(start_time, end_time) {
-    const meeting_id = meetings.length + 1;
+    const meeting_id = get_meeting_id();
     meetings.push({
         id: meeting_id,
         start_time: start_time,
@@ -30,28 +53,19 @@ function scheduleMeeting(start_time, end_time) {
     return meeting_id;
 }
 
-function joinMeetingNow(meeting_id) {
+async function joinMeetingNow(meeting_id) {
+    console.log("Meetings : ", meetings);
     const meeting = meetings.find(meeting => meeting.id == meeting_id);
-    // if (meeting && meeting.start_time < new Date().toISOString() && meeting.end_time > new Date().toISOString()) {
-    if (meeting) {
+    if (meeting && meeting.start_time < new Date().toISOString() && meeting.end_time > new Date().toISOString()) {
         if (meeting.room_allocated == -1) {
-            room_count += 1;
-            meeting.room_allocated = room_count;
+            // case when room is not allocated
+            meeting.room_allocated = await get_a_room();
         }
+        // case when room is already allocated
         meeting.participants_count += 1;
-        return room_count;
+        return meeting.room_allocated;
     } else {
         return -1;
-    }
-}
-
-function clearRooms() {
-    for (let i = 0; i < meetings.length; i++) {
-        if (new Date(meetings[i].end_time).getTime() < new Date().getTime()) {
-            meetings[i].room_allocated = -1;
-            meetings[i].participants_count = 0;
-            room_count -= 1;
-        }
     }
 }
 
@@ -86,24 +100,16 @@ const server = http.createServer((req, res) => {
             res.end(JSON.stringify({ meeting_id }));
         });
     } else if (path === '/joinMeetingNow' && method === 'POST') {
-        // API: POST /joinMeetingNow
-        // Body: { "meeting_id": 1 }
         let body = '';
         req.on('data', chunk => {
             body += chunk.toString();
         });
-        req.on('end', () => {
+        req.on('end', async () => {
             const { meeting_id } = JSON.parse(body);
-            const room_id = joinMeetingNow(meeting_id);
+            const room_id = await joinMeetingNow(meeting_id);
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ room_id }));
         });
-    } else if (path === '/clearRooms' && method === 'POST') {
-        // API: POST /clearRooms
-        // No body required
-        clearRooms();
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ message: 'Rooms cleared' }));
     } else {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Not Found' }));
@@ -117,18 +123,11 @@ server.listen(3500, () => {
 
 /*
 API Documentation:
-1. POST /scheduleMeeting
-   - Description: Schedule a new meeting.
-   - Request Body: { "start_time": "<ISO string>", "end_time": "<ISO string>" }
-   - Response: { "meeting_id": <number> }
+POST /scheduleMeeting
+Body: { "start_time": "2025-04-17T02:00", "end_time": "2025-04-17T03:00" }
+Response: { "meeting_id": 1 }
 
-2. POST /joinMeetingNow
-   - Description: Join an existing meeting.
-   - Request Body: { "meeting_id": <number> }
-   - Response: { "room_id": <number> or -1 if failed }
-
-3. POST /clearRooms
-   - Description: Clear rooms for meetings that have ended.
-   - Request Body: None
-   - Response: { "message": "Rooms cleared" }
+POST /joinMeetingNow
+Body: { "meeting_id": any meeting_id }
+Response: { "room_id": 1 }
 */

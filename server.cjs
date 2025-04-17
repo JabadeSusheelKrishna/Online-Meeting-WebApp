@@ -16,6 +16,33 @@ function validateRoomId(roomId) {
   return checkPattern.test(roomId);
 }
 
+function update_rooms(data) {
+  const options = {
+    hostname: 'localhost',
+    port: 4000,
+    path: '/updateRooms',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Content-Length': Buffer.byteLength(data),
+    },
+  };
+  const req = http.request(options, (res) => {
+    let responseData = '';
+    res.on('data', (chunk) => {
+      responseData += chunk;
+    });
+    res.on('end', () => {
+      console.log('Response from rooms_manager:', responseData);
+    });
+  });
+  req.on('error', (error) => {
+    console.error('Error sending request to rooms_manager:', error);
+  });
+  req.write(data);
+  req.end();
+}
+
 io.on('connection', (socket) => {
   console.log(`User connected: ${socket.id}`);
 
@@ -27,6 +54,11 @@ io.on('connection', (socket) => {
 
     socket.join(roomId);
     console.log(`User ${socket.id} joined room ${roomId}`);
+
+    // now we need to send request to the rooms_manager server to update the room status
+    // we need to send POST request to http://localhost:4000/updateRooms
+    data = JSON.stringify({ "room_id" : roomId, "status" : false });
+    update_rooms(data)
 
     // Notify other peers in the room
     socket.to(roomId).emit('new-peer', socket.id);
@@ -40,6 +72,10 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
       console.log(`User disconnected: ${socket.id}`);
       socket.to(roomId).emit('peer-disconnected', socket.id);
+      // Notify rooms_manager server to update room status
+      // send POST request to http://localhost:4000/updateRooms
+      data = JSON.stringify({ "room_id" : roomId, "status" : true });
+      update_rooms(data);
     });
   });
 });
