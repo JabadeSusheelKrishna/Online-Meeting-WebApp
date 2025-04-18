@@ -1,0 +1,12 @@
+# Artillery configuration for performance testing of server.cjs
+config:
+  target: "ws://localhost:3000" # Updated to use WebSocket protocol
+  phases:
+    - duration: 60
+      arrivalRate: 20 # Reduced arrival rate to lower the load on the server
+scenarios:
+  - engine: "ws" # Specify WebSocket engine
+    flow:
+      - emit:
+          channel: "join-room"
+          data: { roomId: 1 } # Updated to use a valid data structure

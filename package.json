@@ -10,7 +10,12 @@
     "preview": "vite preview",
     "meeting": "node meet_server.cjs",
     "signalling": "node server.cjs",
-    "room_manager": "node rooms_manager.cjs"
+    "room_manager": "node rooms_manager.cjs",
+    "benchmark_signalling": "artillery run --output report.json artillery-config.yml",
+    "viz_baseline_signalling" : "artillery run artillery-config-server.yml --record --key a9_jm1o3zveoyyey2al843erqsx056pqqb2",
+    "benchmark_meeting" : "artillery run --output report.json artillery-config-server.yml",
+    "benchmark_rooms_manager" : "artillery run --output report.json artillery-config-rooms-manager.yml",
+    "benchmark_report" : "artillery report --output report.html report.json"
   },
   "dependencies": {
     "express": "^5.1.0",
