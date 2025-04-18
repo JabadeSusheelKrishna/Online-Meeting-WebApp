@@ -1,0 +1,15 @@
+@startuml MeetingComponent
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+Container_Boundary(meeting, "Meeting Server") {
+  Component(apiController, "Meeting API Controller", "Express Router", "Exposes endpoints to schedule/join meetings")
+  Component(firebaseClient, "Firebase Client", "Firebase SDK", "Stores and retrieves meeting data")
+  Component(meetingScheduler, "Meeting Scheduler", "Node.js Logic", "Handles meeting time validation, overlap prevention")
+}
+
+Rel(apiController, meetingScheduler, "Delegates logic to")
+Rel(meetingScheduler, firebaseClient, "Reads/writes meeting data")
+
+@enduml

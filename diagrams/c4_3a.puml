@@ -1,0 +1,22 @@
+@startuml FrontendComponent
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+Container_Boundary(frontend, "Frontend (React)") {
+
+  Component(ui, "UI Components", "React JSX", "Meeting dashboard, auth forms, room UI")
+  Component(authService, "Authentication Module", "Firebase Auth SDK", "Manages login/signup")
+  Component(webrtcHandler, "WebRTC Handler", "WebRTC + Socket.IO", "Manages peer connections and media streams")
+  Component(apiClient, "API Client", "Axios/Fetch", "Calls Meeting Server and Room Manager")
+
+}
+
+Person(user, "User", "Uses the frontend in a browser")
+
+Rel(user, ui, "Interacts with")
+Rel(ui, authService, "Uses for authentication")
+Rel(ui, apiClient, "Fetches room/meeting data")
+Rel(ui, webrtcHandler, "Manages real-time streams")
+
+@enduml

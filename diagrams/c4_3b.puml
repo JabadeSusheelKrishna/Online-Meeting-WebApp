@@ -1,0 +1,15 @@
+@startuml SignalingComponent
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+Container_Boundary(signaling, "Signaling Server") {
+  Component(webSocketHandler, "WebSocket Handler", "Socket.IO", "Handles client socket connections")
+  Component(peerSignaler, "Peer Signaler", "Custom Node.js logic", "Transfers SDP/ICE messages for WebRTC")
+}
+
+Container(frontend, "Frontend App", "React + WebRTC")
+Rel(frontend, webSocketHandler, "Establishes WebSocket connection")
+Rel(webSocketHandler, peerSignaler, "Transfers signaling data")
+
+@enduml

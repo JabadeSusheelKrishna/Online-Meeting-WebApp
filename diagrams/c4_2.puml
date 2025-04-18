@@ -1,0 +1,30 @@
+@startuml OnlineMeetingWebApp
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Container.puml
+
+' Title
+LAYOUT_WITH_LEGEND()
+
+' Actors
+Person(user, "User", "A user joining or hosting an online meeting")
+
+' System boundary
+System_Boundary(s1, "Online Meeting Web App") {
+
+  Container(frontend, "Frontend App", "React + WebRTC + Vite", "Handles UI, connects via WebRTC, and communicates with backend services.")
+  Container(signalingServer, "Signaling Server", "Node.js + Socket.IO", "Handles WebSocket signaling for WebRTC peer discovery and setup.")
+  Container(meetingServer, "Meeting Server", "Node.js + Express", "Handles meeting scheduling, creation, and participant tracking.")
+  Container(roomManager, "Room Manager", "Node.js", "Manages room allocation and concurrent session handling.")
+  ContainerDb(firebase, "Firebase", "Firebase Authentication & Firestore", "Stores user credentials and meeting metadata securely.")
+
+}
+
+' Relationships
+Rel(user, frontend, "Uses")
+Rel(frontend, signalingServer, "WebSocket Signaling for WebRTC")
+Rel(frontend, meetingServer, "Schedules/Joins meetings")
+Rel(frontend, firebase, "Authenticates via", "HTTPS/REST")
+Rel(meetingServer, firebase, "Reads/Writes meeting data")
+Rel(roomManager, meetingServer, "Updates meeting room allocation")
+Rel(meetingServer, roomManager, "Request for room")
+
+@enduml

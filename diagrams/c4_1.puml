@@ -1,0 +1,22 @@
+@startuml SystemContext
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(user, "End User", "Registers, creates/join meetings, and communicates in real-time")
+
+System(webapp, "Online Meeting Web App", "A real-time video conferencing system")
+
+System_Ext(firebase, "Firebase", "Authentication and data persistence")
+System_Ext(browser, "Web Browser", "User accesses the web app through browser")
+System_Ext(cameraMic, "Camera & Mic", "Provides audio/video input/output")
+System_Ext(webrtc, "WebRTC Infrastructure", "Underlying protocol for P2P connection")
+
+Rel(user, browser, "Uses")
+Rel(browser, webapp, "Accesses through")
+Rel(user, webapp, "Interacts via UI")
+Rel(webapp, firebase, "Uses for Auth and Data Store")
+Rel(webapp, webrtc, "Uses for peer-to-peer communication")
+Rel(user, cameraMic, "Accesses for media input/output")
+
+@enduml

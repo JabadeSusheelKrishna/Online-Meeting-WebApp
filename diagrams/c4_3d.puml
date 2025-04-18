@@ -1,0 +1,15 @@
+@startuml RoomManagerComponent
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+Container_Boundary(roomManager, "Room Manager") {
+  Component(roomController, "Room API", "Express", "Exposes room allocation endpoints")
+  Component(roomAllocator, "Room Allocator", "Node.js Logic", "Tracks and assigns rooms")
+  Component(firebaseRoomStore, "Room Store", "Firebase", "Persists room availability and occupancy")
+}
+
+Rel(roomController, roomAllocator, "Delegates room logic")
+Rel(roomAllocator, firebaseRoomStore, "Reads/Writes room state")
+
+@enduml
