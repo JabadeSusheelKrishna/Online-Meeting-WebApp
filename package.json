@@ -10,8 +10,7 @@
     "preview": "vite preview",
     "meeting": "node meet_server.cjs",
     "signalling": "node server.cjs",
-    "room_manager": "node rooms_manager.cjs",
-    "firestore": "node firestore_Database.mjs"
+    "room_manager": "node rooms_manager.cjs"
   },
   "dependencies": {
     "express": "^5.1.0",
