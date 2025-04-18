@@ -1,0 +1,62 @@
+@startuml
+
+' User Authentication Workflow
+title User Authentication Workflow
+start
+:User opens the app;
+:User enters credentials;
+if (Valid credentials?) then (yes)
+  :Authenticate user via Firebase;
+  :Redirect to dashboard;
+else (no)
+  :Show error message;
+endif
+stop
+
+' Meeting Creation Workflow
+title Meeting Creation Workflow
+start
+:User clicks 'Create Meeting';
+:Generate unique meeting ID;
+:Store meeting details in Firestore;
+:Display meeting ID to user;
+stop
+
+' Room Management Workflow
+title Room Management Workflow
+start
+:User requests to join a room;
+if (Meeting is active?) then (yes)
+  if (Room exists?) then (yes)
+    if (User already in room?) then (yes)
+      :Notify user they are already in the room;
+    else (no)
+      :Add user to room;
+      :Update participant list;
+    endif
+  else (no)
+    :Show error message (Room does not exist);
+  endif
+else (no)
+  :Show error message (Meeting not active);
+endif
+stop
+
+' Real-time Communication Workflow
+title Real-time Communication Workflow
+start
+:User joins a meeting;
+:Establish WebRTC connection;
+:Exchange signaling data via server;
+if (New user joins?) then (yes)
+  :Notify existing participants;
+  :Exchange signaling data with new user;
+  :Update peer-to-peer connections;
+    :Notify new user of existing participants;
+else (no)
+  :Continue ongoing communication;
+endif
+:Start audio/video streams;
+stop
+
+@enduml
