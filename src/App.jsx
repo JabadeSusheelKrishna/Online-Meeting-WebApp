@@ -45,7 +45,7 @@ function App() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ meeting_id: parseInt(meeting_id) }),
+        body: JSON.stringify({ meeting_id }), // Remove parseInt since Firestore IDs are strings
       });
 
       if (!response.ok) {

@@ -1,27 +1,5 @@
 const http = require('http');
-
-let meetings = [
-    {
-        id: 1,
-        start_time: '2025-04-17T00:00',
-        end_time: '2025-04-17T01:00',
-        participants_count: 0,
-        room_allocated: -1,
-    },
-    {
-        id: 2,
-        start_time: '2025-04-17T00:00',
-        end_time: '2025-04-17T01:00',
-        participants_count: 0,
-        room_allocated: -1,
-    }
-];
-
-function get_meeting_id() {
-    // Generates a unique meeting ID
-    // for now, only incrementing the last meeting ID
-    return meetings.length + 1;
-}
+const { add_Data, get_Data, update_Data } = require('./firestore_Database.cjs');
 
 function get_a_room() {
     // Allocates a room to a meeting
@@ -41,30 +19,49 @@ function get_a_room() {
     });
 }
 
-function scheduleMeeting(start_time, end_time) {
-    const meeting_id = get_meeting_id();
-    meetings.push({
-        id: meeting_id,
+async function scheduleMeeting(start_time, end_time) {
+    const meetingData = {
         start_time: start_time,
         end_time: end_time,
         participants_count: 0,
         room_allocated: -1,
-    });
-    return meeting_id;
+    };
+    try {
+        const meeting_id = await add_Data(meetingData); // Store in Firestore
+        return meeting_id;
+    } catch (error) {
+        console.error("Error scheduling meeting:", error);
+        return null; // Or throw the error, depending on your error handling strategy
+    }
 }
 
 async function joinMeetingNow(meeting_id) {
-    console.log("Meetings : ", meetings);
-    const meeting = meetings.find(meeting => meeting.id == meeting_id);
-    if (meeting && meeting.start_time < new Date().toISOString() && meeting.end_time > new Date().toISOString()) {
-        if (meeting.room_allocated == -1) {
-            // case when room is not allocated
-            meeting.room_allocated = await get_a_room();
+    try {
+        // Convert meeting_id to string if it's not already
+        const meetingIdStr = String(meeting_id);
+        console.log("Attempting to join meeting with ID:", meetingIdStr);
+        
+        const meeting = await get_Data(meetingIdStr);
+        if (!meeting) {
+            console.log("Meeting not found");
+            return -1;
         }
-        // case when room is already allocated
-        meeting.participants_count += 1;
-        return meeting.room_allocated;
-    } else {
+
+        if (meeting && meeting.start_time < new Date().toISOString() && meeting.end_time > new Date().toISOString()) {
+            if (meeting.room_allocated == -1) {
+                // case when room is not allocated
+                meeting.room_allocated = await get_a_room();
+                await update_Data(meetingIdStr, { room_allocated: meeting.room_allocated }); // Update Firestore
+            }
+            // case when room is already allocated
+            await update_Data(meetingIdStr, { participants_count: (meeting.participants_count || 0) + 1 }); // Increment participants_count
+            return meeting.room_allocated;
+        } else {
+            console.log("Meeting is not currently active");
+            return -1;
+        }
+    } catch (error) {
+        console.error("Error joining meeting:", error);
         return -1;
     }
 }
@@ -93,9 +90,9 @@ const server = http.createServer((req, res) => {
         req.on('data', chunk => {
             body += chunk.toString();
         });
-        req.on('end', () => {
+        req.on('end', async () => {
             const { start_time, end_time } = JSON.parse(body);
-            const meeting_id = scheduleMeeting(start_time, end_time);
+            const meeting_id = await scheduleMeeting(start_time, end_time);
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ meeting_id }));
         });
