@@ -52,11 +52,6 @@ The project adopts a **Microservices Architecture** to address several key engin
 *   **Technology Heterogeneity:** Different services use protocols best suited for their task (WebSockets for real-time signaling, HTTP/REST for transactional meeting management).
 *   **Maintainability:** Smaller, focused codebases (`server.cjs`, `meet_server.cjs`, etc.) are easier to understand, test, and maintain compared to a large monolithic server.
 
-### Design Patterns Used
-*   **Observer Pattern:** Used in the Signaling Server (Socket.IO) to react to real-time events like `join-room`.
-*   **Repository Pattern:** Encapsulated in `firestore_Database.cjs` to abstract database operations.
-*   **Singleton Pattern:** Used for Firebase initialization and potentially for database connections.
-*   **Rate Limiter:** (Recommended/Implied) To prevent abuse of signaling and meeting APIs.
 
 ## 4. System Diagram
 
