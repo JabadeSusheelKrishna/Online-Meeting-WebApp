@@ -155,5 +155,5 @@ sequenceDiagram
     
     Note over PeerA, PeerB: ICE Candidates Exchanged similarly via Signaling Server
     
-    PeerA<-->>PeerB: Direct P2P Media Stream (Video/Audio)
+    PeerA<-->PeerB: Direct P2P Media Stream (Video/Audio)
 ```
