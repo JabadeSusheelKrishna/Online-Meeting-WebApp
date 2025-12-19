@@ -2,6 +2,7 @@ const http = require('http');
 
 let rooms_available = [true, true, true, true, true];
 let rooms_count = 5;
+let rooms_endtime = [null, null, null, null, null];
 
 function get_room() {
     // Check for available rooms
@@ -12,6 +13,9 @@ function get_room() {
         }
     }
     return -1; // No rooms available
+
+    // check the current time and endtime of the meeting
+    // based on that update the rooms availability
 }
 
 // Create an HTTP server
