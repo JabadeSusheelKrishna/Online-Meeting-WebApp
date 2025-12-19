@@ -5,6 +5,10 @@ function get_a_room() {
     // Allocates a room to a meeting
     // send get request to rooms_manager url : "http://localhost:4000/Room" Method : `GET`
     // return the room number
+
+    // use this in case of updating the rooms
+    // "http://localhost:4000/Room?starttime=" + starttime + "&endtime=" + endtime;
+    
     return new Promise((resolve, reject) => {
         http.get('http://localhost:4000/Room', (res) => {
             let data = '';
